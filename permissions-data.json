@@ -1,0 +1,38 @@
+{
+  "categories": [
+    {
+      "name": "Timesheet management",
+      "description": "Permissions for approving, managing, and exporting employee timesheets.",
+      "groups": [
+        {
+          "name": "Approving timesheets",
+          "permissionCollections": [
+            {
+              "name": "Approve time worked...",
+              "permissions": [
+                {
+                  "name": "In assigned areas",
+                  "description": "For lower level employees in assigned areas at locations they manage, allow user to approve time in timesheets.",
+                  "tags": null,
+                  "checked": false
+                },
+                {
+                  "name": "In assigned areas, for all roles",
+                  "description": "For all employees in areas users manages, allow user to approve time in timesheets. Enables user to approve own timesheets.",
+                  "tags": null,
+                  "checked": false
+                },
+                {
+                  "name": "In all areas",
+                  "description": "For lower level employees in all areas at locations they manage, allow user to approve time in timesheets.",
+                  "tags": null,
+                  "checked": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

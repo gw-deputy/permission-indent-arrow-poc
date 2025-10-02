@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permission Indent</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro";
+      background: #f9fafb;
+      color: #1E163C;
+    }
+    .container {
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .category-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      line-height: 24px;
+    }
+    
+    .category-description {
+      font-size: 14px;
+      font-weight: 400;
+      color: #6b7280;
+      margin-bottom: 24px;
+      line-height: 20px;
+    }
+    
+    .group {
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    .group-title {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      padding-top: 8px;
+      margin-bottom: 24px;
+    }
+    
+    .permission-collection-title {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      margin-bottom: 12px;
+    }
+    
+    .permission-item {
+      position: relative;
+      padding: 12px 0;
+      margin-left: 36px;
+    }
+
+    /* Indent arrow per row - longer arm for first item, shorter for rest */
+    .permission-item::after {
+      content: '';
+      position: absolute;
+      left: -27px; /* 24px minus width of svg stroke */ 
+      top: 12px;
+      width: 16px;
+      height: 12px;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='12' viewBox='0 0 16 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_2364_106940)'%3E%3Cpath d='M11.9648 4.4648C12.1601 4.2696 12.4766 4.2696 12.6719 4.4648L15.8535 7.6465C16.0488 7.8417 16.0488 8.1583 15.8535 8.3535L12.6719 11.5352C12.4766 11.7304 12.1601 11.7304 11.9648 11.5352C11.7696 11.3399 11.7696 11.0234 11.9648 10.8281L14.293 8.5H14.125V7.5H14.293L11.9648 5.1719C11.7696 4.9766 11.7696 4.6601 11.9648 4.4648ZM7.02441 7.3721L7.51953 7.4365C7.84012 7.4783 8.16755 7.5 8.5 7.5H9.875V8.5H8.5C8.21805 8.5 7.93922 8.4859 7.66406 8.459L7.39062 8.4277L6.89453 8.3633L7.02441 7.3721ZM13.375 7.5V8.5H10.625V7.5H13.375ZM3.53809 5.6465L3.93457 5.9512C4.45061 6.3477 5.01973 6.678 5.62891 6.9307L6.09082 7.123L5.70801 8.0459L5.24609 7.8545C4.64112 7.6036 4.07158 7.285 3.54688 6.9082L3.3252 6.7441L2.92871 6.4395L3.53809 5.6465ZM1.37695 2.4092L1.56934 2.8711C1.82199 3.4803 2.15232 4.0494 2.54883 4.5654L2.85352 4.9619L2.06055 5.5713L1.75586 5.1748C1.36276 4.6632 1.02678 4.1052 0.756836 3.5107L0.645508 3.2539L0.454102 2.792L1.37695 2.4092ZM0 -1.5H1V0C1 0.24926 1.01243 0.49551 1.03613 0.73828L1.06348 0.98047L1.12793 1.47559L0.136719 1.60547L0.0722656 1.10938C0.0248776 0.74605 0 0.37578 0 0V-1.5ZM0 -5.5H1V-2.5H0V-5.5ZM0 -8H1V-6.5H0V-8Z' fill='%236C6A72'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_2364_106940'%3E%3Crect width='16' height='12' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+    }
+
+    /* Longer arm for the first item only */
+    .permission-collection-name + .permission-item::after {
+      top: 4px;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='20' viewBox='0 0 16 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_2364_106940)'%3E%3Cpath d='M11.9648 12.4648C12.1601 12.2696 12.4766 12.2696 12.6719 12.4648L15.8535 15.6465C16.0488 15.8417 16.0488 16.1583 15.8535 16.3535L12.6719 19.5352C12.4766 19.7304 12.1601 19.7304 11.9648 19.5352C11.7696 19.3399 11.7696 19.0234 11.9648 18.8281L14.293 16.5H14.125V15.5H14.293L11.9648 13.1719C11.7696 12.9766 11.7696 12.6601 11.9648 12.4648ZM7.02441 15.3721L7.51953 15.4365C7.84012 15.4783 8.16755 15.5 8.5 15.5H9.875V16.5H8.5C8.21805 16.5 7.93922 16.4859 7.66406 16.459L7.39062 16.4277L6.89453 16.3633L7.02441 15.3721ZM13.375 15.5V16.5H10.625V15.5H13.375ZM3.53809 13.6465L3.93457 13.9512C4.45061 14.3477 5.01973 14.678 5.62891 14.9307L6.09082 15.123L5.70801 16.0459L5.24609 15.8545C4.64112 15.6036 4.07158 15.285 3.54688 14.9082L3.3252 14.7441L2.92871 14.4395L3.53809 13.6465ZM1.37695 10.4092L1.56934 10.8711C1.82199 11.4803 2.15232 12.0494 2.54883 12.5654L2.85352 12.9619L2.06055 13.5713L1.75586 13.1748C1.36276 12.6632 1.02678 12.1052 0.756836 11.5107L0.645508 11.2539L0.454102 10.792L1.37695 10.4092ZM0 6.5H1V8C1 8.24926 1.01243 8.49551 1.03613 8.73828L1.06348 8.98047L1.12793 9.47559L0.136719 9.60547L0.0722656 9.10938C0.0248776 8.74605 0 8.37578 0 8V6.5ZM0 2.5H1V5.5H0V2.5ZM0 0H1V1.5H0V0Z' fill='%236C6A72'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_2364_106940'%3E%3Crect width='16' height='20' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+    }
+
+    .permission-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 16px;
+      width: 1px;
+      height: calc(100% - 4px);
+      margin-left: 1px;
+      background: repeating-linear-gradient(
+        to bottom,
+        #6C6A72 0,
+        #6C6A72 3px,
+        transparent 3px,
+        transparent 5px
+      );
+      z-index: 1;
+    }
+    
+    .permission-label {
+      display: flex;
+      align-items: flex-start;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .permission-checkbox {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      margin: 0;
+      flex-shrink: 0;
+    }
+    
+    .permission-content {
+      margin-left: 12px;
+      flex: 1;
+    }
+    
+    .permission-name {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      margin-bottom: 2px;
+    }
+    
+    .permission-description {
+      color: #6C6A72;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div v-for="category in categories" :key="category.name">
+        <h1 class="category-title">{{ category.name }}</h1>
+        <div v-if="category.description" class="category-description">{{ category.description }}</div>
+        
+        <div v-for="group in category.groups" :key="group.name" class="group">
+          <h2 class="group-title">{{ group.name }}</h2>
+          <div v-for="permissionCollection in group.permissionCollections" :key="permissionCollection.name">
+            <h2 class="permission-collection-title">{{ permissionCollection.name }}</h2>
+            
+            <div 
+              v-for="(permission, index) in permissionCollection.permissions" 
+              :key="permission.name"
+              class="permission-item"
+            >
+              <label class="permission-label">
+                <input 
+                  type="checkbox" 
+                  v-model="permission.checked"
+                  class="permission-checkbox"
+                >
+                <div class="permission-content">
+                  <div class="permission-name">
+                    {{ permission.name }}
+                  </div>
+                  <div v-if="permission.description" class="permission-description">
+                    {{ permission.description }}
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+    
+    createApp({
+      data: function() {
+        return {
+          categories: []
+        };
+      },
+      async mounted() {
+        try {
+          const response = await fetch('./permissions-data.json');
+          const data = await response.json();
+          this.categories = data.categories;
+        } catch (error) {
+          console.error('Error loading permissions data:', error);
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
